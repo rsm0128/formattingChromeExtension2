@@ -14,7 +14,7 @@
   "content_scripts" : [
     {
       "matches": ["*://*.anaplan.com/*", "file://*/*"],
-      "js": ["jquery.js", "datatables.min.js", "myscript.js"]
+      "js": ["jquery.js", "datatables.min.js", "module-highlighter.js", "module-colortheme.js", "module-grid.js", "module-logolink.js", "module-tooltip.js", "main.js"]
     }
   ],
   "browser_action": {
