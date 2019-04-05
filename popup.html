@@ -4,19 +4,50 @@
 <head>
   <title>Formatting Formula</title>
   <script type="text/javascript" src="popup.js"></script>
+  <style>
+    .content-area{text-align: left; margin-left: 20px;}
+    .content-area input{display:inline-block; margin-bottom: 5px;}
+    .content-area #btn-collapsible{font-size: 9px; display:inline-block; margin-top: 0px; margin-left: 20px; margin-bottom: 10px}
+    input[type="color"]{width:20px;border-radius: 5px; }
+    .content-area #style-panel{font-size: 9px; column-count: 2;}
+  </style>
 </head>
 
-<body style="width: 180px; height: 40px;">
+<body style="width: 240px;">
   <div style="text-align: center">
-    <img src="logobig.png" height="30px" style="margin-top:20px; margin-bottom: 20px">
-    <div style="text-align: left; margin-left: 20px;">
-  	  <input type="checkbox" id="apply-color" name="formatting-yn" style="display:inline-block; margin-bottom: 20px"> Syntax Highlighter<br>
-      <input type="checkbox" id="apply-indent" name="indent-yn" style="display:inline-block; margin-bottom: 20px";> Formula Indentation<br>
-      <input type="checkbox" id="apply-tooltip" name="tooltip-yn" style="display:inline-block; margin-bottom: 20px";> Cells Tooltip<br>
-      <input type="checkbox" id="apply-grid" name="grid-yn" style="display:inline-block; margin-bottom: 20px";> Dashboard Grid<br>
-      <input type="checkbox" id="disable-link" name="link-yn" style="display:inline-block; margin-bottom: 20px";> Disable Logo Link<br>
-      <input type="checkbox" id="apply-palette" name="palette-yn" style="display:inline-block";> Improved Colors<br>
-      <button class="collapsible" href="#palette" style="font-size: 8px; display:inline-block; margin-top: 4px; margin-left: 20px; margin-bottom: 4px">Edit colors...</button>
+    <img src="logobig.png" height="30px" style="margin-top:10px; margin-bottom: 10px">
+    <div class="content-area">
+  	  <input type="checkbox" id="apply-color" name="formatting-yn"> Syntax Highlighter<br>
+      <input type="checkbox" id="apply-indent" name="indent-yn";> Formula Indentation<br>
+      <input type="checkbox" id="apply-tooltip" name="tooltip-yn";> Cells Tooltip<br>
+      <input type="checkbox" id="apply-grid" name="grid-yn";> Dashboard Grid<br>
+      <input type="checkbox" id="disable-link" name="link-yn";> Disable Logo Link<br>
+      <input type="checkbox" id="apply-palette" name="palette-yn"> Improved Colors<br>
+      <button id="btn-collapsible">Edit colors...</button>
+      <div id="style-panel" style="display:none">
+        <input type="color" id="editable-cells-color"> Edit Cells Bg<br>
+        <input type="color" id="sum1-cells-color"> Sum1 Bg<br>
+        <input type="color" id="sum2-cells-color"> Sum2 Bg<br>
+        <input type="color" id="sum3-cells-color"> Sum3 Bg<br>
+        <hr>
+        <input type="text" id="tbl-font-family" style="width:60px; height:20px" placeholder="helvetica"> Font<br>
+        <input type="text" id="tbl-font-size" style="width:20px; height:20px" placeholder="11"> Font Size<br>
+        <hr>
+        <input type="color" id="h2-txt-color"> H2 Txt<br>
+        <input type="color" id="h2-bg-color"> H2 Bg<br>
+        <input type="text" id="h2-txt-align" style="width:40px; height:20px" placeholder="left"> H2 Align<br>
+        <input type="color" id="info-bg-color"> Info Bg<br>
+        <input type="color" id="slider-back-color"> Slider Bg<br>
+        <input type="color" id="slider-txt-color"> Slider Txt<br>
+        <input type="color" id="nav-back-color"> Navbar Bg<br>
+        <input type="color" id="nav-button-color"> Navbar Btn <br>
+        <input type="color" id="nav-btntxt-color"> Navbar Txt<br>
+        <input type="color" id="label-txt-color"> Labels Txt<br>
+        <hr>
+        <input type="color" id="settings-selected-color"> Selection<br>
+        <input type="color" id="th-back-color"> Col Head Bg<br>
+        <input type="color" id="th-txt-color"> Col Head Txt<br>
+      </div>
     </div>
     <hr>
     <p style="font-size: 10px; margin-bottom: 10px">Created by <a href="https://www.bipixconsulting.com" target="_blank">BIPIX consulting</a></p>

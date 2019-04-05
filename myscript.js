@@ -4,6 +4,9 @@ var gRsmCurrentTooltip = false;
 var gRsmCurrentGrid = false;
 var gRsmDisableLink = false;
 var gPrevValue = '';
+var gRsmCurrentPalette = false;
+
+var gConfigData = {};
 
 //////// NEW FORMULA BAR FUNCTIONS ////////////////////
 function rsmIsLetter(str) {
@@ -305,7 +308,7 @@ function rsmInitElement() {
     rsmSetSelectionRange(el, selection.start, selection.start);
     var startPosition = rsmGetCaretPosition(el);
     var endPosition = startPosition;
-    $('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText')[0].setSelectionRange(startPosition, endPosition);  
+    $('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText')[0].setSelectionRange(startPosition, endPosition);
   }, false);
 
   //  sync cursor position
@@ -324,19 +327,30 @@ function rsmInitElement() {
     } 
   });
 
-  $('.dijitTabContainerTopChildWrapper.dijitVisible .formated_text').keydown(function(e) {
-    if (e.keyCode == '13') {
-      console.log(e.keyCode)
-      //rsmUpdateFormatting($('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText').val());
-    return false;
-    }
+  // enter keys
+  $('.dijitTabContainerTopChildWrapper.dijitVisible .formated_text').keydown(function(e){
+    if (e.key === "Enter") {   
+      $('.dijitTabContainerTopChildWrapper.dijitVisible .formated_text').hide();
+      $('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText').show();
+      $('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText')[0].focus();
+      $('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText').hide();
+      $('.dijitTabContainerTopChildWrapper.dijitVisible .formated_text').show();
+    } 
+    
+  });
+
+  // other keys
+  $('.dijitTabContainerTopChildWrapper.dijitVisible .formated_text').keydown(function(e){
+    if (e.key != "Escape" && e.key != "Enter") {
+      $('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText')[0].dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
+    } 
   });
 
   // double click
   $('.dijitTabContainerTopChildWrapper.dijitVisible .formated_text').dblclick(function(){
     $('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText')[0].dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
   });
-  
+
   //  click on validate or cancel
   $('.formulaEditorButtonsCell .dijitButtonNode').click(function(){
     rsmUpdateFormatting($('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText').val());
@@ -366,9 +380,9 @@ $.fn.overflown=function(){
 }
 
 function rsmApplyTooltip(flag) {
-  if (flag && !$('#rsm-tooltip-style').length) {
+  /*if (flag && !$('#rsm-tooltip-style').length) {
     $('body').append("<style id='rsm-tooltip-style'>.gridSelection{pointer-events: none;}</style>");
-  }
+  }*/
   $('table.grid.qa-module td > div, table.grid.qa-module th > div').each(function(e){
     if ( $(this).overflown() ) {
       if (flag) {
@@ -388,7 +402,62 @@ function rsmApplyGrid(flag) {
   document.getElementById("rsm-grid-style").disabled = !flag;
 }
 
-//////// ANAPLAN LOGO FUNCTIONS ///////////////////////
+//////// PALETTE FUNCTIONS ///////////////////////////////
+function rsmApplyPalette(configData) {
+  $('#rsm-palette-style').remove();
+  // if (!$('#rsm-palette-style').length) {
+    /*    var cssStr = ""
+      + 'nav.ap-gn{background-color:' + configData.nav_back_color + ';}'
+      + '.ap-gn-icon-btn--circle .ap-gn-icon-btn__icon {background-color:' + configData.nav_button_color + ';fill:' + configData.nav_btntxt_color + ';}'
+      + '.claro .dijitTreeRowSelected{background:' + configData.settings_selected_color + ';} .claro .dijitTreeRowHover{background:' + configData.nav_button_color + ';} .claro .dijitTreeRowSelected.dijitTreeRowHover{background:' + configData.nav_button_color + ';}'
+      + '.original .modelContentsHeadline .modelSize{color:' + configData.blue_txt_color + ';}'
+      + '.original .primary-button .dijitButtonNode{background:' + configData.blue_btn_color + '; background-color:' + configData.blue_btn_color + ';}'
+      + '.original .dashboardWidget-BUTTON .primary-button .dijitButtonNode{background:' + configData.blue_btn_color + '; background-color:' + configData.blue_btn_color + ';}'
+      + '.original .formulaBar .formulaBarRowLabelCell .dijitButtonText, .original .formulaEditor .formulaEditorRowLabelCell .dijitButtonText {color: ' + configData.label_color + ';}'
+      + '.classic td, .classic th{background-color:' + configData.editable_cells_color + ';color:' + configData.editable_txt_color + ';}'
+      + 'body{font-size:' + configData.tbl_font_size + 'px;font-family:' + configData.tbl_font_family + ';}.classic td, .classic th{font-family:' + configData.tbl_font_family + '}'
+      + '.classic .gridcolumnheader{color:' + configData.th_txt_color + ';background:' + configData.th_back_color + '}'
+      ;*/
+    var cssStr = ""  
+    + 'button.actionButton{background:' + configData.blue_btn_color + ';}'  
+      + 'a{color:' + configData.label_txt_color + ';}'
+      + '.original #banner a{color:' + configData.label_txt_color + ';} .claro .dijitSelectLabel{color:' + configData.label_txt_color + ';} .claro .dijitTextBox .dijitInputInner{color:' + configData.label_txt_color + ';}'
+      + 'nav.ap-gn{background-color:' + configData.nav_back_color + ';}' 
+      //Slider Background Color
+      + '.original #slideout{background:' + configData.slider_back_color + ';}'
+      //Slider Text Color
+      + '.aui .ap-expanding-panel .ap-header .ap-header-title{color:' + configData.slider_txt_color + ';} .aui .table-of-contents .panels .ap-expanding-panel .ap-tree .ap-tree-item a{color:' + configData.slider_txt_color + ';} .original .dojoxExpandoTitle{color:' + configData.slider_txt_color + ';}'
+      + '.ap-gn-icon-btn--circle .ap-gn-icon-btn__icon {background-color:' + configData.nav_button_color + ';fill:' + configData.nav_btntxt_color + ';}'
+      + '.claro .dijitTreeRowSelected{background:' + configData.settings_selected_color + ';} .claro .dijitTreeRowHover{background:' + configData.nav_button_color + ';} .claro .dijitTreeRowSelected.dijitTreeRowHover{background:' + configData.nav_button_color + ';}'
+      + '.original .masterSelector .dojoDndItemSelected{background:' + configData.settings_selected_color + ';} .original .masterSelector .dojoDndItemOver{background:' + configData.label_txt_color + ';} .original .masterSelector .dojoDndItemSelected .dojoDndItemOver{background:' + configData.label_txt_color + ';} .original .history .previewTable tr.selected td{background:' + configData.label_txt_color + ';}'
+      + '.original .modelContentsHeadline .modelSize{color:' + configData.label_txt_color + ';}'
+      + '.original .primary-button .dijitButtonNode{background:' + configData.blue_btn_color + '; background-color:' + configData.blue_btn_color + ';}'
+      + '.claro.original .dijitToolbar .dijitDropDownButtonHover .dijitButtonNode{background:' + configData.blue_btn_hover + '; background-color:' + configData.blue_btn_hover + ';}'
+      + '.claro.original .dijitToolbar .dijitDropDownButtonHoverFocused .dijitButtonNode{background:' + configData.blue_btn_hover + '; background-color:' + configData.blue_btn_hover + ';}'
+      + '.claro .dojoDndItemAnchor{background:' + configData.blue_btn_hover + '; background-color:' + configData.blue_btn_hover + ';}'
+      + '.claro.original .dijitToolbar .dijitDropDownButtonOpenedHover .dijitButtonNode{background:' + configData.blue_btn_hover + '; background-color:' + configData.blue_btn_hover + ';}'
+      + '.claro.original .dijitToolbar .dijitButtonHover .dijitButtonNode{background:' + configData.blue_btn_hover + '; background-color:' + configData.blue_btn_hover + ';}'
+      + '.original .dashboardWidget-BUTTON .primary-button .dijitButtonNode{background:' + configData.blue_btn_color + '; background-color:' + configData.blue_btn_color + ';}'
+      + '.original .formulaBar .formulaBarRowLabelCell .dijitButtonText, .original .formulaEditor .formulaEditorRowLabelCell .dijitButtonText {color: ' + configData.label_txt_color + ';}'
+      + '.classic .editable {background-color:' + configData.editable_cells_color + ';}'
+      + '.classic .gridrowsummary1, .classic .gridrowsummary1 .noneditable{font-weight:bold; background:' + configData.sum1_cells_color + ';}'
+      + '.classic .gridrowsummary2, .classic .gridrowsummary2 .noneditable{font-weight:bold; background:' + configData.sum2_cells_color + ';}'
+      + '.classic .gridrowsummary3, .classic .gridrowsummary3 .noneditable{font-weight:bold; background:' + configData.sum3_cells_color + ';}'
+      + 'body{font-size:' + configData.tbl_font_size + 'px;font-family:' + configData.tbl_font_family + ';}.classic td, .classic th{font-size:' + configData.tbl_font_size + 'px;font-family:' + configData.tbl_font_family + ';}'
+      + '.aui a{font-size:' + configData.tbl_font_size + 'px;font-family:' + configData.tbl_font_family + ';}'
+      + '.classic .gridcolumnheader{color:' + configData.th_txt_color + ';background:' + configData.th_back_color + '} .anaplanTabsView .classic .gridcolumnheader.gridlabelhighlight{color:' + configData.th_txt_color + ';background:' + configData.th_back_color + '} .anaplanTabsSettings .classic .gridcolumnheader.gridlabelhighlight{color:' + configData.th_txt_color + ';background:' + configData.th_back_color + '} .dijitLayoutContainerFocused .classic .gridcolumnheader.gridlabelhighlight{color:' + configData.th_txt_color + ';background:' + configData.th_back_color + '}'
+      + '.classic .gridcrosshairs{background: transparent}'
+      + '.original .dashboardWidget-STATIC_TEXT .heading2{color:' + configData.h2_txt_color + ';background-color:' + configData.h2_bg_color + '; font-weight: bold; text-align:'+ configData.h2_txt_align +';}'
+      + '.original .dashboardWidget-STATIC_TEXT .instruction{background-color:' + configData.info_bg_color + ';}'
+      + '.original .staticTextMenu .instruction .dijitMenuItemLabel{background-color:' + configData.info_bg_color + ';}'
+    ;
+
+    $('body').append("<style id='rsm-palette-style'>" + cssStr + "</style>");
+  // }
+  document.getElementById("rsm-palette-style").disabled = !configData.rsmPalette;
+}
+
+//////// ANAPLAN LOGO FUNCTION ///////////////////////
 function rsmApplyDisableLink(flag) {
   var attr = $('.ap-gn__logo').attr('data-href');
   if(attr == undefined || attr == false || attr == '') {
@@ -418,9 +487,6 @@ function rsmRefresh() {
 $(document).ready(function() {
   $('body').click(function(e){
     setTimeout(function(){
-      if ( $('table.grid.qa-module').length > 0 ) {
-        rsmApplyTooltip(gRsmCurrentTooltip);
-      }
 
       if ( $('.dashboardLayout').length > 0 ) {
         rsmApplyGrid(gRsmCurrentGrid);
@@ -436,11 +502,23 @@ $(document).ready(function() {
         let curValue = $('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText').val();
         if ( retVal == 2 && curValue == gPrevValue ) return; // if not updated
 
-        gPrevValue = curValue;
+        var el = $(".dijitTabContainerTopChildWrapper.dijitVisible .formated_text").get(0);
+        let selection = rsmGetSelectionCharacterOffsetWithin(el);
+        // rsmUpdateFormatting($('.dijitTabContainerTopChildWrapper.dijitVisible .formated_text').text());
         rsmApplyColor(gRsmCurrentColor);
+
+        if (1) {
+          rsmSetSelectionRange(el, selection.start + curValue.length - gPrevValue.length, selection.start + curValue.length - gPrevValue.length);
+        }
+
         rsmApplyIndent(gRsmCurrentIndent);
-        $('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText').attr('prev_value', gPrevValue);
+        $('.dijitTabContainerTopChildWrapper.dijitVisible .formulaEditorText').attr('prev_value', curValue);
+        gPrevValue = curValue;
       };
+
+      if ( $('table.grid.qa-module').length > 0 ) {
+        rsmApplyTooltip(gRsmCurrentTooltip);
+      }
     }, 100);
   });
 
@@ -456,6 +534,7 @@ $(document).ready(function() {
   });
 
   $('body').click();
+  rsmApplyPalette(gConfigData);
 });
 
 //////// EXTENSION FUNCTIONS //////////////////////////
@@ -482,6 +561,14 @@ chrome.extension.onMessage.addListener(
       gRsmDisableLink = false;
     } else if ( request.action == 'disable-link' ) {
       gRsmDisableLink = true;
+    } else if ( request.action == 'apply-palette' ) {
+      gRsmCurrentPalette = true;
+      rsmApplyPalette(request.data);
+    } else if ( request.action == 'disable-palette' ) {
+      gRsmCurrentPalette = false;
+      rsmApplyPalette(request.data);
+    } else if ( request.action == 'style_change' ) {
+      rsmApplyPalette(request.data);
     }
 
     if ( $('table.grid.qa-module').length > 0 ) {
@@ -503,17 +590,46 @@ chrome.extension.onMessage.addListener(
   } 
 );
 
-chrome.storage.local.get({
-    rsmColor: false,
-    rsmIndent: false,
-    rsmTooltip: false,
-    rsmGrid: false,
-    rsmLink: false,
-  }, function(items) {
-  gRsmCurrentColor = items.rsmColor;
-  gRsmCurrentIndent = items.rsmIndent;
-  gRsmCurrentTooltip = items.rsmTooltip;
-  gRsmCurrentGrid = items.rsmGrid;
-  gRsmDisableLink = items.rsmLink;
-  gRsmEnablePalette = items.rsmPalette;
-});
+function rsmReadSettings() {
+  chrome.storage.local.get({
+      rsmColor: false,
+      rsmIndent: false,
+      rsmTooltip: false,
+      rsmGrid: false,
+      rsmLink: false,
+      rsmPalette: false,
+      nav_back_color: '#102161',
+      nav_button_color: '#2bb8ff',
+      nav_btntxt_color: '#ffffff',
+      slider_back_color: '#eaeaea',
+      slider_txt_color: '#333333',
+      settings_selected_color: '#102161',
+      label_txt_color: '#2bb8ff',
+      editable_cells_color: '#fffea5',
+      editable_txt_color: '#102161',
+      sum1_cells_color: '#ABAAAC',
+      sum2_cells_color: '#C0C0C0',
+      sum3_cells_color: '#DDDCDE',
+      h2_txt_color: '#424242',
+      h2_bg_color: '#ffffff',
+      h2_txt_align: 'left',
+      info_bg_color: '#E9F9FF',
+      blue_btn_color: '#102161',
+      blue_btn_hover: '#2bb8ff',
+      tbl_font_family: 'helvetica',
+      tbl_font_size: '11',
+      th_back_color: '#F1F1F1',
+      th_txt_color: '#000000'
+    }, function(items) {
+    gRsmCurrentColor = items.rsmColor;
+    gRsmCurrentIndent = items.rsmIndent;
+    gRsmCurrentTooltip = items.rsmTooltip;
+    gRsmCurrentGrid = items.rsmGrid;
+    gRsmDisableLink = items.rsmLink;
+    gRsmCurrentPalette = items.rsmPalette;
+    
+    gConfigData = items;
+  });
+}
+
+rsmReadSettings();
