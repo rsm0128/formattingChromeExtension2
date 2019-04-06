@@ -63,36 +63,7 @@ function rsm_save_options() {
 
 function rsm_restore_options() {
   // Use default value color = 'red' and likesColor = true.
-  chrome.storage.local.get({
-    rsmColor: false,
-    rsmIndent: false,
-    rsmTooltip: false,
-    rsmGrid: false,
-    rsmLink: false,
-    rsmPalette: false,
-    nav_back_color: '#102161',
-    nav_button_color: '#2bb8ff',
-    nav_btntxt_color: '#ffffff',
-    slider_back_color: '#eaeaea',
-    slider_txt_color: '#333333',
-    settings_selected_color: '#102161',
-    label_txt_color: '#2bb8ff',
-    editable_cells_color: '#fffea5',
-    editable_txt_color: '#102161',
-    sum1_cells_color: '#ABAAAC',
-    sum2_cells_color: '#C0C0C0',
-    sum3_cells_color: '#DDDCDE',
-    h2_txt_color: '#424242',
-    h2_bg_color: '#ffffff',
-    h2_txt_align: 'left',
-    info_bg_color: '#E9F9FF',
-    blue_btn_color: '#102161',
-    blue_btn_hover: '#2bb8ff',
-    tbl_font_family: 'helvetica',
-    tbl_font_size: '11',
-    th_back_color: '#F1F1F1',
-    th_txt_color: '#000000'
-  }, function(items) {
+  chrome.storage.local.get(gDefaultSetting, function(items) {
     document.getElementById('apply-color').checked = items.rsmColor;
     document.getElementById('apply-indent').checked = items.rsmIndent;
     document.getElementById('apply-tooltip').checked = items.rsmTooltip;
